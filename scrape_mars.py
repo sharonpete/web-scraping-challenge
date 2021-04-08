@@ -1,26 +1,11 @@
-from flask import Flask, render_template, redirect
-from flask_pymongo import PyMongo
-import scrape_surfing
+import requests
+import pymongo
+from splinter import Browser
+from b24 import BeautifulSoup
+from webdriver_manager.chrome import ChromeDriverManager
+import pandas as pd
 
-app = Flask(__name__)
-
-mongo = PyMongo(app, uri="mongodb://localhost:27017/###")
-
-@app.route('/')
-def index():
-    return render_template('index.html', surfing=surfing)
-
-@app.route('/scrape')
-def scrape():
-    surfing = mongo.db.surfing
-    data = scrape_surfing.scrape()
-    surfing.update(
-        {},
-        data,
-        upsert=True
-    )
-    return redirect("/", code 302)
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
+def init_browser():
+    # Set up splinter
+    executable_path = {'executable_path':ChromeDriverManager().install()}
+    browser = Browser('chrome', **executable_path, headless=False)
