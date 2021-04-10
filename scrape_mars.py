@@ -137,7 +137,7 @@ def scrape():
 # Let's do the thing
 print('scrape_mars.py now running.... ')
 
-scrape()
+#scrape()
 
 
 
