@@ -18,6 +18,9 @@ def init_mongodb():
 
 def scrape():
     print("Now scraping -----------")
+    # Create dictionary object to return the scraped data
+    dict_mars = {}
+
     # NASA Mars News ....
     print("NASA Mars News")
     # Use the splinter browser... 
@@ -43,11 +46,12 @@ def scrape():
             # gather up the items for mongo db
             if (title and blurb):
                 post = {
-                    'title': title,
-                    'blurb': blurb,
+                    title: title,
+                    blurb: blurb,
                 }
 
-            collection.insert_one(post)
+            #collection.insert_one(post)
+            dict_mars.update(post)
         except Exception as e:
             print(e)
 
@@ -63,12 +67,12 @@ def scrape():
     
     jpl_results = jpl_soup.find_all('img', class_='headerimage fade-in')
 
-    featured_image_url = f"{jpl_url}{jpl_results[0]['src']}"
+    featured = f"{jpl_url}{jpl_results[0]['src']}"
 
     try:
-        post = {'featured_image_url':featured_image_url}
-        collection.insert_one(post)
-
+        post = {featured_image_url:featured}
+        #collection.insert_one(post)
+        dict_mars.update(post)
     except Exception as e:
         print(e) 
     
@@ -93,12 +97,14 @@ def scrape():
         html_table = mars_earth_table_df.to_html()
         print(html_table)
         post = {'mars_earth_table_html': html_table}
-        collection.insert_one(post)
-        
+        #collection.insert_one(post)
+        dict_mars.update(post)
+
         html_table = mars_profile_table_df.to_html()
         print(html_table)
         post = {'mars_profile_table_html': html_table}
-        collection.insert_one(post)
+        #collection.insert_one(post)
+        dict_mars.update(post)
     except Exception as e:
         print(e)
 
@@ -129,11 +135,13 @@ def scrape():
     try:  
         # gather up the items for mongo db
         post = {'hemisphere_image_urls': hemisphere_image_urls}
-        collection.insert_one(post)
-
+        #collection.insert_one(post)
+        dict_mars.update(post)
     except Exception as e:
         print(e)
 
+    #print(f'in scrape_mars.py, this is the return: {dict_mars}')
+    return dict_mars
 # Let's do the thing
 print('scrape_mars.py now running.... ')
 
