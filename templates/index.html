@@ -19,6 +19,7 @@
     <!-- Mission to Mars Report -->
     <div class="row">
       <div class="col-md-8 col-md-offset-2">
+        <h3>Mars Featured Image</h3>
         <img src={{ mars.featured_image_url }} width: 50% />
         <h3>Latest Mars News</h3>
         <ui>
@@ -30,7 +31,13 @@
         
       </div>
     </div>
-
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <h3>Mars Facts</h3>
+        {{ mars.mars_profile_table_html}}
+        
+      </div>
+    </div>
     <h3>Mars Hemispheres</h3>
     <div class="card-deck">
       <div class="col-md-12">
@@ -38,7 +45,7 @@
               {% for item in mars.hemisphere_image_urls %}
               <div class='col-md-6'>
                 <div class="card text-white bg-dark" style="margin: 30px;">
-                  <img class='card-img-top' src="{{item.img_url}}" />
+                  <img class='card-img-top' src="{{ item.img_url }}" />
                   <div class="card-body">
                     <p class="card-text">{{ item.title }}</p>
                   </div>
@@ -51,14 +58,7 @@
 
 
 
-    <div class="row">
-      <div class="col-md-8 col-md-offset-2">
-        <img src= {{ mars.featured_image_url }} width: 50% />
-        <h3>Latest Mars News</h3>
-        <p>{{ mars.title}}</p>
-        <p>{{ mars.blurb}}</p>
-      </div>
-    </div>
+    
   </div>
 
 </body>
