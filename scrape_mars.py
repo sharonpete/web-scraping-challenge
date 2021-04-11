@@ -99,29 +99,34 @@ def scrape():
 
 
     # Mars Hemispheres  - high resolutions images for each of Mars' hemispheres
-    #print("Mars Hemispheres  - high resolutions images for each of Mars' hemispheres")
-    hemi_base_url = "https://marshemispheres.com/images/"
+    USGS_url="https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars"
+    base_USGS_url = "https://astrogeology.usgs.gov"
+    browser.visit(USGS_url)
 
-    # Valles Marineris
-    valles_marineris_url = f'{hemi_base_url}valles_marineris_enhanced.tif'
+    html = browser.html
+    soup = BeautifulSoup(html, 'html.parser')
 
-    # Cerberus
-    cerberus_url = f'{hemi_base_url}cerberus_enhanced.tif'
+    results = soup.find_all('div', class_='item')
+ 
+    hemisphere_image_urls = []
 
-    # Schiaparelli 
-    schiaparelli_url = f'{hemi_base_url}schiaparelli_enhanced.tif'
+    for result in results:
+        title = result.find('h3').text
+        href = result.find('a')['href']
+        img_url = f'{base_USGS_url}{href}'
+        print(img_url)
+        browser.visit(img_url)
+        html = browser.html
+        soup = BeautifulSoup(html, 'html.parser')
+        original_img = soup.find('div', class_='downloads')
+        img_url = original_img.find('a')['href']
+        hemi = {'title':title, 'img_url': img_url}
+        hemisphere_image_urls.append(hemi)
 
-    # Syrtis Major
-    syrtis_major_url = f'{hemi_base_url}syrtis_major_enhanced.tif'
-
-    hemisphere_image_urls = [
-        {"title": "Valles Marineris Hemisphere", "img_url": valles_marineris_url},
-        {"title": "Cerberus Hemisphere", "img_url": cerberus_url},
-        {"title": "Schiaparelli Hemisphere", "img_url": schiaparelli_url},
-        {"title": "Syrtis Major Hemisphere", "img_url": syrtis_major_url},
-    ]
+   
     dict_mars['hemisphere_image_urls'] = hemisphere_image_urls
-    
+    brower.quit()
+
     client = init_mongodb()
     db = client.nasa_db
     collection = db.items
