@@ -11,22 +11,23 @@ mongo = PyMongo(app)
 
 @app.route('/')
 def index():
-    data = list(mongo.db.items.find_one())
-    print(f'THIS IS MARS!!! {data}')
-    return render_template('index.html', data=data)
+    #data = list(mongo.db.items.find_one())
+    mars = mongo.db.items.find_one()
+    
+    return render_template('index.html', mars=mars)
     
 
-@app.route('/scrape')
-def scrape():
-    mars = mongo.db.items
-    data = scrape_mars.scrape()
-    print(data)
-    mars.update_many(  #changed per deprecation warning
-        {},
-        data,
-        upsert=True
-    )
-    return redirect("/", code=302)
+# @app.route('/scrape')
+# def scrape():
+#     #mars = mongo.db.items
+#     mars = scrape_mars.scrape()
+#     print(mars)
+#     mars.update_many(  #changed per deprecation warning
+#         {},
+#         data,
+#         upsert=True
+#     )
+#     return redirect("/", code=302)
 
 
 if __name__ == "__main__":

@@ -10,7 +10,7 @@
 </head>
 
 <body>
-  <div clas="container">
+  <div class="container">
     <div class="jumbotron text-center">
       <h1>Mission to Mars</h1>
       <p><a class="btn btn-primary btn-lg" href="/scrape" role="button">Scrape New Data</a></p>
@@ -19,10 +19,44 @@
     <!-- Mission to Mars Report -->
     <div class="row">
       <div class="col-md-8 col-md-offset-2">
-        <img src='{{data.featured_image_url}}' width: 50% />
+        <img src={{ mars.featured_image_url }} width: 50% />
         <h3>Latest Mars News</h3>
-        <p>{{ data.title}}</p>
-        <p>{{ data.blurb}}</p>
+        <ui>
+          {% for article in mars.nasa_news_articles %}
+          <li><h6>{{ article.title}}</h6>
+            <p>{{ article.blurb}}</p></li>
+          {% endfor %}
+        </ui>
+        
+      </div>
+    </div>
+
+    <h3>Mars Hemispheres</h3>
+    <div class="card-deck">
+      <div class="col-md-12">
+          <div class="row">
+              {% for item in mars.hemisphere_image_urls %}
+              <div class='col-md-6'>
+                <div class="card text-white bg-dark" style="margin: 30px;">
+                  <img class='card-img-top' src="{{item.img_url}}" />
+                  <div class="card-body">
+                    <p class="card-text">{{ item.title }}</p>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+          </div>
+      </div>
+    </div>
+
+
+
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <img src= {{ mars.featured_image_url }} width: 50% />
+        <h3>Latest Mars News</h3>
+        <p>{{ mars.title}}</p>
+        <p>{{ mars.blurb}}</p>
       </div>
     </div>
   </div>

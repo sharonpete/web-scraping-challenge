@@ -32,34 +32,31 @@ def scrape():
 
     results = soup.find_all('div', class_='list_text')
 
-    client = init_mongodb()
+    # client = init_mongodb()
 
-    db = client.nasa_db
-    collection = db.items
+    # db = client.nasa_db
+    # collection = db.items
 
-    # Loop through results and populate Mongo nasa_db
+    nasa_news_articles = []
+    # Loop through results 
     for result in results:
         try:
             title = result.find('div', class_='content_title').text
             blurb = result.find('div', class_='article_teaser_body').text
           
-            # gather up the items for mongo db
             if (title and blurb):
                 post = {
                     'title': title,
-                    'blurb': blurb
-                }
-                dict_mars['title'] = blurb
-
-
-            collection.insert_one(post)
-            
+                    'blurb': blurb}
+                
+                nasa_news_articles.append(post)
+       
         except Exception as e:
             print(e)
-
+    dict_mars['nasa_news_articles'] = nasa_news_articles
  
     # JPL Mars Space Images - Featured Image
-    print("JPL Mars Space Images - Featured Image")
+    #print("JPL Mars Space Images - Featured Image")
     jpl_url = "https://spaceimages-mars.com/"
 
     browser.visit(jpl_url)
@@ -69,20 +66,21 @@ def scrape():
     
     jpl_results = jpl_soup.find_all('img', class_='headerimage fade-in')
 
-    featured = f"{jpl_url}{jpl_results[0]['src']}"
+    featured_image_url = f"{jpl_url}{jpl_results[0]['src']}"
+    dict_mars['featured_image_url'] = featured_image_url
 
-    try:
-        post = {'featured_image_url':featured}
-        collection.insert_one(post)
-        dict_mars['featured_image_url'] = featured
+    # try:
+    #     #post = {'featured_image_url':featured_image_url}
+    #     #collection.insert_one(post)
+    #     dict_mars['featured_image_url'] = featured_image_url
 
-    except Exception as e:
-        print(e) 
+    # except Exception as e:
+    #     print(e) 
     
     browser.quit()
 
     # Mars Facts
-    print("Mars Facts from galaxyfacts-mars.com")
+    #print("Mars Facts from galaxyfacts-mars.com")
     mars_facts_url = 'https://galaxyfacts-mars.com/'
 
     tables = pd.read_html(mars_facts_url)
@@ -96,26 +94,12 @@ def scrape():
     mp_list =["Mars Attribute", "Measurement"]
     mars_profile_table_df.columns = mp_list
     
-    try:  
-        # gather up the items for mongo db
-        html_table = mars_earth_table_df.to_html()
-        print(html_table)
-        post = {'mars_earth_table_html': html_table}
-        collection.insert_one(post)
-        dict_mars['mars_earth_table_html'] = html_table
-
-        html_table = mars_profile_table_df.to_html()
-        print(html_table)
-        post = {'mars_profile_table_html': html_table}
-        collection.insert_one(post)
-        dict_mars['mars_profile_table_html'] = html_table
-
-    except Exception as e:
-        print(e)
+    dict_mars['mars_earth_table_html'] = mars_earth_table_df.to_html()
+    dict_mars['mars_profile_table_html'] = mars_profile_table_df.to_html()
 
 
     # Mars Hemispheres  - high resolutions images for each of Mars' hemispheres
-    print("Mars Hemispheres  - high resolutions images for each of Mars' hemispheres")
+    #print("Mars Hemispheres  - high resolutions images for each of Mars' hemispheres")
     hemi_base_url = "https://marshemispheres.com/images/"
 
     # Valles Marineris
@@ -136,13 +120,15 @@ def scrape():
         {"title": "Schiaparelli Hemisphere", "img_url": schiaparelli_url},
         {"title": "Syrtis Major Hemisphere", "img_url": syrtis_major_url},
     ]
-
+    dict_mars['hemisphere_image_urls'] = hemisphere_image_urls
+    
+    client = init_mongodb()
+    db = client.nasa_db
+    collection = db.items
+    
     try:  
-        # gather up the items for mongo db
-        post = {'hemisphere_image_urls': hemisphere_image_urls}
-        collection.insert_one(post)
-        dict_mars['hemisphere_image_urls'] = hemisphere_image_urls
-
+        collection.insert_one(dict_mars)
+        
     except Exception as e:
         print(e)
 
