@@ -49,9 +49,11 @@ def scrape():
                     'title': title,
                     'blurb': blurb
                 }
+                dict_mars['title'] = blurb
 
-            #collection.insert_one(post)
-            dict_mars.add(post)
+
+            collection.insert_one(post)
+            
         except Exception as e:
             print(e)
 
@@ -71,11 +73,13 @@ def scrape():
 
     try:
         post = {'featured_image_url':featured}
-        #collection.insert_one(post)
-        dict_mars.update(post)
+        collection.insert_one(post)
+        dict_mars['featured_image_url'] = featured
+
     except Exception as e:
         print(e) 
     
+    browser.quit()
 
     # Mars Facts
     print("Mars Facts from galaxyfacts-mars.com")
@@ -97,14 +101,15 @@ def scrape():
         html_table = mars_earth_table_df.to_html()
         print(html_table)
         post = {'mars_earth_table_html': html_table}
-        #collection.insert_one(post)
-        dict_mars.update(post)
+        collection.insert_one(post)
+        dict_mars['mars_earth_table_html'] = html_table
 
         html_table = mars_profile_table_df.to_html()
         print(html_table)
         post = {'mars_profile_table_html': html_table}
-        #collection.insert_one(post)
-        dict_mars.update(post)
+        collection.insert_one(post)
+        dict_mars['mars_profile_table_html'] = html_table
+
     except Exception as e:
         print(e)
 
@@ -135,17 +140,18 @@ def scrape():
     try:  
         # gather up the items for mongo db
         post = {'hemisphere_image_urls': hemisphere_image_urls}
-        #collection.insert_one(post)
-        dict_mars.update(post)
+        collection.insert_one(post)
+        dict_mars['hemisphere_image_urls'] = hemisphere_image_urls
+
     except Exception as e:
         print(e)
 
-    #print(f'in scrape_mars.py, this is the return: {dict_mars}')
+    print(f'in scrape_mars.py, this is the return: {dict_mars}')
     return dict_mars
 # Let's do the thing
 print('scrape_mars.py now running.... ')
 
-#scrape()
+scrape()
 
 
 
