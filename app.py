@@ -21,7 +21,7 @@ def scrape():
     mars = mongo.db.items
     data = scrape_mars.scrape()
     print(data)
-    mars.update(
+    mars.update_many(  #changed per deprecation warning
         {},
         data,
         upsert=True

@@ -46,12 +46,12 @@ def scrape():
             # gather up the items for mongo db
             if (title and blurb):
                 post = {
-                    title: title,
-                    blurb: blurb,
+                    'title': title,
+                    'blurb': blurb
                 }
 
             #collection.insert_one(post)
-            dict_mars.update(post)
+            dict_mars.add(post)
         except Exception as e:
             print(e)
 
@@ -70,7 +70,7 @@ def scrape():
     featured = f"{jpl_url}{jpl_results[0]['src']}"
 
     try:
-        post = {featured_image_url:featured}
+        post = {'featured_image_url':featured}
         #collection.insert_one(post)
         dict_mars.update(post)
     except Exception as e:
